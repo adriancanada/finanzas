@@ -1,0 +1,2 @@
+C:/flutterapps/finanzas_app/android/app/.cxx/RelWithDebInfo/1v1s2s13/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/flutterapps/finanzas_app/android/app/.cxx/RelWithDebInfo/1v1s2s13/arm64-v8a/CMakeFiles/rebuild_cache.dir

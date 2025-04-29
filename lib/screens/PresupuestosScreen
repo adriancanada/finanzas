@@ -1,0 +1,94 @@
+// lib/screens/presupuestos_screen.dart
+import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+
+class PresupuestosScreen extends StatefulWidget {
+  const PresupuestosScreen({Key? key}) : super(key: key);
+
+  @override
+  State<PresupuestosScreen> createState() => _PresupuestosScreenState();
+}
+
+class _PresupuestosScreenState extends State<PresupuestosScreen> {
+  late Box<String> _catBox;
+  late Box<double> _presuBox;
+  final Map<String, TextEditingController> _controllers = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _catBox = Hive.box<String>('categorias');
+    _presuBox = Hive.box<double>('presupuestos');
+
+    // Categories list including global
+    final keys = <String>['Global', ..._catBox.values.toSet()];
+    for (var key in keys) {
+      final val = _presuBox.get(key) ?? 0.0;
+      _controllers[key] = TextEditingController(text: val > 0 ? val.toStringAsFixed(2) : '');
+    }
+  }
+
+  @override
+  void dispose() {
+    for (var c in _controllers.values) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
+  Future<void> _savePresupuestos() async {
+    for (var entry in _controllers.entries) {
+      final key = entry.key;
+      final text = entry.value.text.replaceAll(',', '.');
+      final val = double.tryParse(text) ?? 0.0;
+      await _presuBox.put(key, val);
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Presupuestos guardados')),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Presupuestos')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Define tu tope mensual por categoría o global',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 16),
+              ..._controllers.entries.map((e) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: TextField(
+                    controller: e.value,
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    decoration: InputDecoration(
+                      labelText: e.key,
+                      suffixText: '€',
+                      border: const OutlineInputBorder(),
+                    ),
+                  ),
+                );
+              }).toList(),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _savePresupuestos,
+                  child: const Text('Guardar presupuestos'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

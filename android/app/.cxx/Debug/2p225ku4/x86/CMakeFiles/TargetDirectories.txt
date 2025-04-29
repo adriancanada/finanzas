@@ -1,0 +1,2 @@
+C:/flutterapps/finanzas_app/android/app/.cxx/Debug/2p225ku4/x86/CMakeFiles/edit_cache.dir
+C:/flutterapps/finanzas_app/android/app/.cxx/Debug/2p225ku4/x86/CMakeFiles/rebuild_cache.dir
