@@ -3,7 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 
 class CategoryPieChart extends StatelessWidget {
   final Map<String, double> data;
-  const CategoryPieChart(this.data, {Key? key}) : super(key: key);
+  const CategoryPieChart(this.data, {super.key});
 
   // Formatea un número y quita ceros y punto sobrantes: 
   // 10.00 → "10",  10.50 → "10.5",  10.25 → "10.25"
@@ -47,7 +47,7 @@ class CategoryPieChart extends StatelessWidget {
           return PieChartSectionData(
             color: colors[i % colors.length],
             value: values[i],
-            title: '${displayPct}%',
+            title: '$displayPct%',
             radius: 60,
             showTitle: pct > 0.05,
             titleStyle: const TextStyle(
@@ -65,7 +65,7 @@ class CategoryPieChart extends StatelessWidget {
               final amount = values[idx];
               final displayAmt = _formatNumber(amount, decimals: 2);
               final snackBar = SnackBar(
-                content: Text('$cat: ${displayAmt}€'),
+                content: Text('$cat: $displayAmt€'),
                 duration: const Duration(seconds: 2),
               );
               ScaffoldMessenger.of(context).hideCurrentSnackBar();

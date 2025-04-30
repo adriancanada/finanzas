@@ -1,6 +1,7 @@
 // lib/screens/presupuestos_screen.dart
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class PresupuestosScreen extends StatefulWidget {
   const PresupuestosScreen({Key? key}) : super(key: key);
@@ -13,10 +14,22 @@ class _PresupuestosScreenState extends State<PresupuestosScreen> {
   late Box<String> _catBox;
   late Box<double> _presuBox;
   final Map<String, TextEditingController> _controllers = {};
+    static const _bannerAdUnitId = 'ca-app-pub-1945530944392812~2471263396';
+  late BannerAd _bannerAd;
+  bool _isBannerLoaded = false;
 
   @override
   void initState() {
     super.initState();
+     _bannerAd = BannerAd(
+      adUnitId: _bannerAdUnitId,
+      size: AdSize.banner,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (_) => setState(() => _isBannerLoaded = true),
+        onAdFailedToLoad: (_, __) => _isBannerLoaded = false,
+      ),
+    )..load();
     _catBox = Hive.box<String>('categorias');
     _presuBox = Hive.box<double>('presupuestos');
 
@@ -48,47 +61,57 @@ class _PresupuestosScreenState extends State<PresupuestosScreen> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Presupuestos')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Define tu tope mensual por categoría o global',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 16),
-              ..._controllers.entries.map((e) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: TextField(
-                    controller: e.value,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                    decoration: InputDecoration(
-                      labelText: e.key,
-                      suffixText: '€',
-                      border: const OutlineInputBorder(),
-                    ),
+ @override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(title: const Text('Presupuestos')),
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Define tu tope mensual por categoría o global',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 16),
+            ..._controllers.entries.map((e) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: TextField(
+                  controller: e.value,
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  decoration: InputDecoration(
+                    labelText: e.key,
+                    suffixText: '€',
+                    border: const OutlineInputBorder(),
                   ),
-                );
-              }).toList(),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _savePresupuestos,
-                  child: const Text('Guardar presupuestos'),
                 ),
+              );
+            }).toList(),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _savePresupuestos,
+                child: const Text('Guardar presupuestos'),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
-    );
-  }
+    ),
+
+    // Banner en el bottomNavigationBar
+    bottomNavigationBar: _isBannerLoaded
+        ? SizedBox(
+            width: _bannerAd.size.width.toDouble(),
+            height: _bannerAd.size.height.toDouble(),
+            child: AdWidget(ad: _bannerAd),
+          )
+        : null,
+  );
+}
+
 }

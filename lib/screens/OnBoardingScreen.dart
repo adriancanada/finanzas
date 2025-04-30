@@ -1,6 +1,5 @@
-// lib/screens/onboarding_screen.dart
-import 'package:finanzas_app/screens/HomeScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:finanzas_app/screens/HomeScreen.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -31,6 +30,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       description: 'Consulta resúmenes diarios y por categoría.',
       icon: Icons.pie_chart_outline,
     ),
+    _OnboardingPage(
+      title: 'Gráficos interactivos',
+      description: 'Descubre tus tendencias diarias y mensuales de un vistazo.',
+      icon: Icons.show_chart,
+    ),
+    _OnboardingPage(
+      title: 'Recibe notificaciones',
+      description: 'Recibe alertas cuando te acerques a tu presupuesto definido.',
+      icon: Icons.notifications_active,
+    ),
   ];
 
   @override
@@ -39,15 +48,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     _settingsBox = Hive.box('settings');
   }
 
-void _finishOnboarding() {
-  // Marcar que ya vio el onboarding
-  Hive.box('settings').put('seenOnboarding', true);
-
-  // Reemplazamos la pila con HomeScreen directamente:
-  Navigator.of(context).pushReplacement(
-    MaterialPageRoute(builder: (_) => const HomeScreen()),
-  );
-}
+  void _finishOnboarding() {
+    _settingsBox.put('seenOnboarding', true);
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => const HomeScreen()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,0 +1,1 @@
+C:\flutterapps\finanzas_app\android\app\src\main\kotlin\com\adriancanada\finanzas_app\MainActivity.kt

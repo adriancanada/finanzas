@@ -10,8 +10,8 @@ class WeeklyBarChart extends StatelessWidget {
   const WeeklyBarChart({
     required this.gastosSemana,
     this.maxValue,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class WeeklyBarChart extends StatelessWidget {
                 backDrawRodData: BackgroundBarChartRodData(
                   show: true,
                   toY: maxY,
-                  color: cs.surfaceVariant,
+                  color: cs.surfaceContainerHighest,
                 ),
               ),
             ],

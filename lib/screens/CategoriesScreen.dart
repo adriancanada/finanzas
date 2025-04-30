@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class CategoriesScreen extends StatefulWidget {
@@ -11,10 +12,21 @@ class CategoriesScreen extends StatefulWidget {
 class _CategoriesScreenState extends State<CategoriesScreen> {
   late Box<String> _catBox;
   final TextEditingController _ctrl = TextEditingController();
-
+    static const _bannerAdUnitId = 'ca-app-pub-1945530944392812~2471263396';
+  late BannerAd _bannerAd;
+  bool _isBannerLoaded = false;
   @override
   void initState() {
     super.initState();
+     _bannerAd = BannerAd(
+      adUnitId: _bannerAdUnitId,
+      size: AdSize.banner,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (_) => setState(() => _isBannerLoaded = true),
+        onAdFailedToLoad: (_, __) => _isBannerLoaded = false,
+      ),
+    )..load();
     _catBox = Hive.box<String>('categorias');
 
     // Sembrar categorías por defecto si no existen
@@ -82,38 +94,47 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final cats = _catBox.values.toList();
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Categorías'),
-      ),
-      body: ListView.builder(
-        itemCount: cats.length,
-        itemBuilder: (ctx, i) => ListTile(
-          title: Text(cats[i]),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.edit),
-                onPressed: () => _showCategoryDialog(index: i),
-              ),
-              IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () async {
-                  await _catBox.deleteAt(i);
-                  setState(() {});
-                },
-              ),
-            ],
-          ),
+Widget build(BuildContext context) {
+  final cats = _catBox.values.toList();
+  return Scaffold(
+    appBar: AppBar(
+      title: const Text('Categorías'),
+    ),
+    body: ListView.builder(
+      itemCount: cats.length,
+      itemBuilder: (ctx, i) => ListTile(
+        title: Text(cats[i]),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.edit),
+              onPressed: () => _showCategoryDialog(index: i),
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () async {
+                await _catBox.deleteAt(i);
+                setState(() {});
+              },
+            ),
+          ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showCategoryDialog(),
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
+    ),
+    floatingActionButton: FloatingActionButton(
+      onPressed: () => _showCategoryDialog(),
+      child: const Icon(Icons.add),
+    ),
+    // Banner en el bottomNavigationBar:
+    bottomNavigationBar: _isBannerLoaded
+      ? SizedBox(
+          width: _bannerAd.size.width.toDouble(),
+          height: _bannerAd.size.height.toDouble(),
+          child: AdWidget(ad: _bannerAd),
+        )
+      : null,
+  );
+}
+
 }

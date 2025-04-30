@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/movimiento.dart';
-import '../widgets/daily_bar_chart.dart';
+import '../widgets/banner_container.dart';
 import '../widgets/weekly_bar_chart.dart';
 import '../widgets/category_pie_chart.dart';
-import '../widgets/balance_line_chart.dart';
 
 class ResumenScreen extends StatefulWidget {
-  const ResumenScreen({Key? key}) : super(key: key);
+  const ResumenScreen({super.key});
 
   @override
   State<ResumenScreen> createState() => _ResumenScreenState();
@@ -19,7 +18,7 @@ class _ResumenScreenState extends State<ResumenScreen> {
 
   Map<int, double> _ingresosPorDia = {};
   Map<int, double> _gastosPorDia = {};
-  Map<String, double> _expensePorCategoria = {};
+  final Map<String, double> _expensePorCategoria = {};
   double _totalIngresos = 0;
   double _totalGastos = 0;
   double _saldo = 0;
@@ -130,7 +129,8 @@ class _ResumenScreenState extends State<ResumenScreen> {
             saldoDiarioList.add(acumulado);
           }
 
-          return SingleChildScrollView(
+           return BannerContainer(
+      child: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -233,7 +233,8 @@ class _ResumenScreenState extends State<ResumenScreen> {
                 // ),
               ],
             ),
-          );
+          ),
+           );
         },
       ),
     );

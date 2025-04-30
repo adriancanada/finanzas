@@ -36,6 +36,7 @@ dependencies:
   file_selector: ^1.0.3
   awesome_notifications: ^0.10.1
   fl_chart: 0.71.0
+  google_mobile_ads: ^6.0.0   # o la última versión
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -49,17 +50,25 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
    flutter_lints: ^5.0.0
+   flutter_launcher_icons: ^0.14.3
+   
+# Configuración de flutter_launcher_icons — ¡no dentro de dev_dependencies!
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon.png"
 
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
-
-# The following section is specific to Flutter packages.
 flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/icon.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
-  uses-material-design: true
+
+
 
   # To add assets to your application, add an assets section, like this:
   # assets:

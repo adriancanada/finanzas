@@ -22,7 +22,7 @@ lineTouchData: LineTouchData(
       return spots.map((spot) {
         return LineTooltipItem(
           'Día ${spot.x.toInt()}: ${spot.y.toStringAsFixed(2)}€',
-          TextStyle(color: Theme.of(context).colorScheme.onBackground),
+          TextStyle(color: Theme.of(context).colorScheme.onSurface),
         );
       }).toList();
     },
